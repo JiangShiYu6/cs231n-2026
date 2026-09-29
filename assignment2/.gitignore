@@ -1,0 +1,15 @@
+__pycache__/
+.ipynb_checkpoints/
+cs231n/build/
+*.pyd
+*.so
+cs231n/datasets/cifar-10-batches-py/
+cs231n/datasets/coco_captioning/
+cs231n/datasets/*.zip
+cs231n/datasets/*.part
+.ipython-local/
+.notebook-runtime/
+*.log
+*.pt
+cs231n/datasets/*
+!cs231n/datasets/*.sh

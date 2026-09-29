@@ -4,6 +4,7 @@ from future import standard_library
 standard_library.install_aliases()
 from builtins import range
 import urllib.request, urllib.error, urllib.parse, os, tempfile
+from io import BytesIO
 
 import numpy as np
 from imageio import imread
@@ -57,23 +58,19 @@ def deprocess_image(img, rescale=False):
     return np.clip(255 * img, 0.0, 255.0).astype(np.uint8)
 
 
-def image_from_url(url):
+def image_from_url(url, timeout=5, quiet=False):
     """
     Read an image from a URL. Returns a numpy array with the pixel data.
-    We write the image to a temporary file then read it back. Kinda gross.
+    Decode the downloaded bytes in memory to avoid temporary-file locks.
     """
     try:
-        f = urllib.request.urlopen(url)
-        _, fname = tempfile.mkstemp()
-        with open(fname, "wb") as ff:
-            ff.write(f.read())
-        img = imread(fname)
-        os.remove(fname)
-        return img
-    except urllib.error.URLError as e:
-        print("URL Error: ", e.reason, url)
-    except urllib.error.HTTPError as e:
-        print("HTTP Error: ", e.code, url)
+        with urllib.request.urlopen(url, timeout=timeout) as response:
+            with BytesIO(response.read()) as buffer:
+                return imread(buffer)
+    except (urllib.error.URLError, OSError, ValueError) as e:
+        if not quiet:
+            print("Image unavailable:", url, str(e))
+        return None
 
 
 def load_image(filename, size=None):

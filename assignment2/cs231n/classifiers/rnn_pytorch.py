@@ -141,7 +141,14 @@ class CaptioningRNN:
         #                                                                          #
         # You also don't have to implement the backward pass.                      #
         ############################################################################
-
+        captions_in = captions[:, :-1]
+        captions_out = captions[:, 1:]
+        mask = (captions_out != self._null)
+        h_0=affine_forward(features,W_proj,b_proj)
+        word_vectors =word_embedding_forward(captions_in,W_embed)
+        h=rnn_forward(word_vectors,h_0,Wx,Wh,b)
+        scores = temporal_affine_forward(h, W_vocab, b_vocab)
+        loss = temporal_softmax_loss(scores, captions_out, mask)
         ############################################################################
         #                             END OF YOUR CODE                             #
         ############################################################################
@@ -173,7 +180,9 @@ class CaptioningRNN:
           of captions should be the first sampled word, not the <START> token.
         """
         N = features.shape[0]
-        captions = self._null * torch.ones((N, max_length), dtype=torch.long)
+        captions = torch.full(
+            (N, max_length), self._null, dtype=torch.long, device=features.device
+        )
 
         # Unpack parameters
         W_proj, b_proj = self.params["W_proj"], self.params["b_proj"]
@@ -205,7 +214,21 @@ class CaptioningRNN:
         # NOTE: we are still working over minibatches in this function. Also if   #
         # you are using an LSTM, initialize the first cell state to zeros.        #
         ###########################################################################
+        if self.cell_type != "rnn":
+            raise NotImplementedError("LSTM sampling is not implemented yet")
 
+        with torch.no_grad():
+            prev_h = affine_forward(features, W_proj, b_proj)
+            current_word = torch.full(
+                (N,), self._start, dtype=torch.long, device=features.device
+            )
+            for t in range(max_length):
+                word_vectors = word_embedding_forward(current_word, W_embed)
+                next_h = rnn_step_forward(word_vectors, prev_h, Wx, Wh, b)
+                scores = affine_forward(next_h, W_vocab, b_vocab)
+                current_word = scores.argmax(dim=1)
+                captions[:, t] = current_word
+                prev_h = next_h
         ############################################################################
         #                             END OF YOUR CODE                             #
         ############################################################################

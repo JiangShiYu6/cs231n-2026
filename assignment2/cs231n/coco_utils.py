@@ -82,3 +82,39 @@ def sample_coco_minibatch(data, batch_size=100, split="train"):
     image_features = data["%s_features" % split][image_idxs]
     urls = data["%s_urls" % split][image_idxs]
     return captions, image_features, urls
+
+
+def sample_coco_preview(data, batch_size=3, split="train", max_attempts=20):
+    """Sample reachable images for display only, keeping all rows aligned.
+
+    Training continues to use sample_coco_minibatch and never needs image URLs.
+    Returns captions, features, URLs, and decoded images; may return fewer rows
+    if the download budget is exhausted. Each distinct URL is tried only once.
+    """
+    from .image_utils import image_from_url
+
+    if batch_size < 1 or max_attempts < 1:
+        raise ValueError("batch_size and max_attempts must be positive")
+    captions = data[split + "_captions"]
+    selected, images, seen = [], [], set()
+    for row in np.random.permutation(len(captions)):
+        image_idx = data[split + "_image_idxs"][row]
+        url = str(data[split + "_urls"][image_idx])
+        if url in seen:
+            continue
+        seen.add(url)
+        image = image_from_url(url, timeout=5, quiet=True)
+        if image is not None:
+            selected.append(row)
+            images.append(image)
+        if len(images) >= batch_size or len(seen) >= max_attempts:
+            break
+    rows = np.asarray(selected, dtype=np.int64)
+    image_idxs = data[split + "_image_idxs"][rows]
+    if len(images) < batch_size:
+        print("Preview: loaded %d/%d images after trying %d URLs. "
+              "Some links may be unavailable or the network may be unreachable. "
+              "Training uses local features and is unaffected."
+              % (len(images), batch_size, len(seen)))
+    return (captions[rows], data[split + "_features"][image_idxs],
+            data[split + "_urls"][image_idxs], images)
