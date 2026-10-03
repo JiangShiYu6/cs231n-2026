@@ -15,7 +15,7 @@ from cs231n.unet import Unet
 def main():
     notebook = json.loads((ROOT / 'DDPM.ipynb').read_text(encoding='utf-8'))
     results = []
-    for threads in (1, 2):
+    for threads in (1, 2, 4, 8):
         torch.set_num_threads(threads)
         for mkldnn in (True, False):
             torch.backends.mkldnn.enabled = mkldnn

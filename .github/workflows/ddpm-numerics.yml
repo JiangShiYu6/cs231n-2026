@@ -7,10 +7,19 @@ permissions:
   contents: read
 jobs:
   cpu-reference:
-    runs-on: ubuntu-22.04
+    runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        torch: ['2.6.0', '2.3.0']
+        include:
+          - os: ubuntu-22.04
+            isa: AVX2
+          - os: ubuntu-22.04
+            isa: SSE41
+          - os: macos-14
+            isa: DEFAULT
+    env:
+      ONEDNN_MAX_CPU_ISA: ${{ matrix.isa }}
+      DNNL_MAX_CPU_ISA: ${{ matrix.isa }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -18,12 +27,15 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
-      - run: pip install torch==${{ matrix.torch }} --index-url https://download.pytorch.org/whl/cpu
+      - if: runner.os == 'Linux'
+        run: pip install torch==2.6.0 --index-url https://download.pytorch.org/whl/cpu
+      - if: runner.os == 'macOS'
+        run: pip install torch==2.6.0
       - run: pip install numpy==1.26.4 einops==0.8.1
       - run: python assignment3/tests/check_ddpm_references.py
       - uses: actions/upload-artifact@v4
         with:
-          name: ddpm-reference-${{ matrix.torch }}
+          name: ddpm-reference-${{ matrix.os }}-${{ matrix.isa }}
           path: |
             assignment3/ddpm_reference_report.json
             assignment3/ddpm_fixture_*.npz
