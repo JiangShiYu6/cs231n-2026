@@ -12,6 +12,17 @@ The notes below explain the main ideas behind each exercise. Results and figures
 | 2 | Normalization, dropout, convolutional networks, image captioning | [Assignment 2](https://cs231n.github.io/assignments2026/assignment2/) |
 | 3 | Transformers, SimCLR, diffusion models, CLIP and DINO | [Assignment 3](https://cs231n.github.io/assignments2026/assignment3/) |
 
+## Clone this repository
+
+Repository: [JiangShiYu6/cs231n-2026](https://github.com/JiangShiYu6/cs231n-2026)
+
+With Git installed, run these commands to download the assignment code and notebooks:
+
+```bash
+git clone https://github.com/JiangShiYu6/cs231n-2026.git
+cd cs231n-2026
+```
+
 ## Contents
 
 - [Assignment 1: Classification fundamentals](#assignment-1-classification-fundamentals)
