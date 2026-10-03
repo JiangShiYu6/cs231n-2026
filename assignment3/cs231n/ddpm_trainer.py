@@ -104,7 +104,7 @@ class Trainer(object):
             print(f"Downloading...{ckpt_path}")
             import urllib.request
             fname = os.path.basename(ckpt_path)
-            url = f"http://cs231n.stanford.edu/2025/storage/a3/{fname}"
+            url = f"https://cs231n.stanford.edu/2025/storage/a3/{fname}"
             urllib.request.urlretrieve(url, ckpt_path)
             print("Download complete.")
         else:

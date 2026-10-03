@@ -29,7 +29,8 @@ def get_text_augs():
 
 class ClipEmbed:
     def __init__(self, device):
-        self.model, self.preprocess = clip.load("ViT-B/32", device=device)
+        cache = os.path.join(os.path.dirname(__file__), "../.cache/clip")
+        self.model, self.preprocess = clip.load("ViT-B/32", device=device, download_root=cache)
         self.model = self.model.eval()
         self.device = device
 
@@ -110,7 +111,7 @@ def download_data(fpath):
         print(f"Downloading...{fpath}")
         import urllib.request
         fname = os.path.basename(fpath)
-        url = f"http://cs231n.stanford.edu/2025/storage/a3/{fname}"
+        url = f"https://cs231n.stanford.edu/2025/storage/a3/{fname}"
         urllib.request.urlretrieve(url, fpath)
         print("Download complete.")
     else:

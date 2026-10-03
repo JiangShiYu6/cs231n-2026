@@ -1,0 +1,24 @@
+--extra-index-url https://download.pytorch.org/whl/cu124
+numpy==1.26.4
+torch==2.6.0+cu124
+torchvision==0.21.0+cu124
+pandas==2.2.3
+opencv-python==4.11.0.86
+tensorflow==2.18.0
+tensorflow-datasets==4.9.7
+tensorflow-metadata==1.16.1
+scikit-learn==1.6.1
+thop==0.1.1.post2209072238
+einops==0.8.1
+ftfy==6.3.1
+regex==2026.9.29
+tqdm==4.70.1
+importlib_resources==7.1.0
+h5py==3.12.1
+imageio
+matplotlib
+nbformat
+nbclient
+ipykernel
+jupyterlab
+clip @ git+https://github.com/openai/CLIP.git@d05afc436d78f1c48dc0dbf8e5980a9d471f35f6

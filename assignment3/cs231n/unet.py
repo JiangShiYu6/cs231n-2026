@@ -1,4 +1,3 @@
-import copy
 from einops import rearrange
 from torch import einsum
 
@@ -7,16 +6,13 @@ import torch
 import torch.nn.functional as F
 import math
 
-
 def exists(x):
     return x is not None
-
 
 def default(val, d):
     if exists(val):
         return val
     return d() if callable(d) else d
-
 
 def Upsample(dim, dim_out=None):
     """Upsample the image feature resolution a factor of 2."""
@@ -25,11 +21,9 @@ def Upsample(dim, dim_out=None):
         nn.Conv2d(dim, default(dim_out, dim), 3, padding=1),
     )
 
-
 def Downsample(dim, dim_out=None):
     """Downsample the image feature resolution a factor of 2."""
     return nn.Conv2d(dim, default(dim_out, dim), kernel_size=2, stride=2)
-
 
 class RMSNorm(nn.Module):
     """RMSNorm layer which is compute-efficient simplified variant of LayerNorm."""
@@ -41,7 +35,6 @@ class RMSNorm(nn.Module):
 
     def forward(self, x):
         return F.normalize(x, dim=1) * self.g * self.scale
-
 
 class SinusoidalPosEmb(nn.Module):
     """Sinusoidal position embedding for time steps."""
@@ -58,7 +51,6 @@ class SinusoidalPosEmb(nn.Module):
         emb = x[:, None] * emb[None, :]
         emb = torch.cat((emb.sin(), emb.cos()), dim=-1)
         return emb
-
 
 class Block(nn.Module):
     """A conv block with feature modulation."""
@@ -81,7 +73,6 @@ class Block(nn.Module):
 
         x = self.act(x)
         return x
-
 
 class ResnetBlock(nn.Module):
     """A ResNet-like block with context dependent feature modulation."""
@@ -115,7 +106,6 @@ class ResnetBlock(nn.Module):
         h = self.dropout(h)
         h = self.block2(h)
         return h + self.res_conv(x)
-
 
 class Unet(nn.Module):
     def __init__(
@@ -170,16 +160,11 @@ class Unet(nn.Module):
         # Downsampling blocks
         ####################################################################
         for ind, (dim_in, dim_out) in enumerate(in_out):
-            down_block = None
-            ##################################################################
-            # TODO: Create one UNet downsampling layer `down_block` as a ModuleList.
-            # It should be a ModuleList of 3 blocks [ResnetBlock, ResnetBlock, Downsample].
-            # Each ResnetBlock operates on dim_in channels and outputs dim_in channels.
-            # Make sure to pass the context_dim to each ResnetBlock.
-            # The Downsample block operates on dim_in channels and outputs dim_out channels.
-            # Make sure to exactly follow this structure of ModuleList in order to
-            # load a pretrained checkpoint.
-            ##################################################################
+            down_block = nn.ModuleList([
+                ResnetBlock(dim_in, dim_in, context_dim),
+                ResnetBlock(dim_in, dim_in, context_dim),
+                Downsample(dim_in, dim_out),
+            ])
 
             ##################################################################
             self.downs.append(down_block)
@@ -196,17 +181,13 @@ class Unet(nn.Module):
         # self.ups will also be a ModuleList of ModuleLists.
         # Each BlockList will contain 3 blocks [Upsample, ResnetBlock, ResnetBlock].
         for ind, (dim_in, dim_out) in enumerate(in_out_ups):
-            up_block = None
-            ##################################################################
-            # TODO: Create one UNet upsampling layer as a ModuleList.
-            # It should be a ModuleList of 3 blocks [Upsample, ResnetBlock, ResnetBlock].
-            # This will mirror the corresponding downsampling block.
-            # Don't forget to account for the skip connections by having 2 x dim_out
-            # channels at the input of both ResnetBlocks.
-            ##################################################################
+            up_block = nn.ModuleList([
+                Upsample(dim_in, dim_out),
+                ResnetBlock(2 * dim_out, dim_out, context_dim),
+                ResnetBlock(2 * dim_out, dim_out, context_dim),
+            ])
 
             self.ups.append(up_block)
-            ##################################################################
 
         # Final convolution to map to the output channels
         self.final_conv = nn.Conv2d(dim, channels, 1)
@@ -214,20 +195,11 @@ class Unet(nn.Module):
     def cfg_forward(self, x, time, model_kwargs={}):
         """Classifier-free guidance forward pass. model_kwargs should contain `cfg_scale`."""
 
+        model_kwargs = dict(model_kwargs)
         cfg_scale = model_kwargs.pop("cfg_scale")
-        print("Classifier-free guidance scale:", cfg_scale)
-        model_kwargs = copy.deepcopy(model_kwargs)
-
-        ##################################################################
-        # TODO: Apply classifier-free guidance using Eq. (6) from
-        # https://arxiv.org/pdf/2207.12598 i.e.
-        # x = (scale + 1) * eps(x_t, cond) - scale * eps(x_t, empty)
-        #
-        # You will have to call self.forward two times.
-        # For unconditional sampling, pass None in`text_emb`.
-        ##################################################################
-
-        ##################################################################
+        conditional = self.forward(x, time, model_kwargs)
+        unconditional = self.forward(x, time, {**model_kwargs, "text_emb": None})
+        x = (cfg_scale + 1) * conditional - cfg_scale * unconditional
 
         return x
 
@@ -250,7 +222,7 @@ class Unet(nn.Module):
         context = self.time_mlp(time)
 
         # Embed condition and add to context
-        cond_emb = model_kwargs["text_emb"]
+        cond_emb = model_kwargs.get("text_emb")
         if cond_emb is None:
             cond_emb = torch.zeros(x.shape[0], self.condition_dim, device=x.device)
         if self.training:
@@ -263,28 +235,23 @@ class Unet(nn.Module):
         # Initial convolution
         x = self.init_conv(x)
 
-        ##################################################################
-        # TODO: Process `x` through the U-Net conditioned on the context.
-        #
-        # 1. Downsampling:
-        #    - Process `x` through each downsampling block with context.
-        #    - After each ResNet block, save the output (feature maps) in a list or dict
-        #      for use as skip connections in the upsampling path.
-        #    - Make sure to pass the context to each ResNet block.
-        #
-        # 2. Middle:
-        #    - Process `x` through the middle blocks with context.
-        #
-        # 3. Upsampling:
-        #    - Process `x` through each upsampling block with context.
-        #    - Before each ResNet block, concatenate the input with the corresponding
-        #      skip connection from the downsampling path.
-        #    - Make sure to pass the context to each ResNet block.
-        ##################################################################
+        # Encoder features are reused in reverse order by the decoder.
+        skips = []
+        for block1, block2, downsample in self.downs:
+            x = block1(x, context)
+            skips.append(x)
+            x = block2(x, context)
+            skips.append(x)
+            x = downsample(x)
 
-        ##################################################################
+        x = self.mid_block1(x, context)
+        x = self.mid_block2(x, context)
 
-        # Final block
+        for upsample, block1, block2 in self.ups:
+            x = upsample(x)
+            x = block1(torch.cat([x, skips.pop()], dim=1), context)
+            x = block2(torch.cat([x, skips.pop()], dim=1), context)
+
         x = self.final_conv(x)
 
         return x

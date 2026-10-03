@@ -1,0 +1,42 @@
+[
+  {
+    "cell": 9,
+    "max_relative_error": 5.104469096295361e-07,
+    "max_absolute_error": 5.960464477539063e-08
+  },
+  {
+    "cell": 12,
+    "max_relative_error": 1.0600407449601335e-06,
+    "max_absolute_error": 1.1920928955078125e-06
+  },
+  {
+    "cell": 12,
+    "max_relative_error": 1.8902662759501254e-06,
+    "max_absolute_error": 1.2218952178955078e-06
+  },
+  {
+    "cell": 18,
+    "max_relative_error": 1.4688642710356004e-05,
+    "max_absolute_error": 1.386668815606118e-06
+  },
+  {
+    "cell": 20,
+    "max_relative_error": 7.114425673382465e-07,
+    "max_absolute_error": 4.2709350587699646e-05
+  },
+  {
+    "cell": 22,
+    "max_relative_error": 6.96344541990084e-08,
+    "max_absolute_error": 4.786682139545917e-08
+  },
+  {
+    "cell": 22,
+    "max_relative_error": 6.125410007962113e-08,
+    "max_absolute_error": 5.903938293805311e-08
+  },
+  {
+    "cell": 31,
+    "max_relative_error": 0.0001179221661745567,
+    "max_absolute_error": 6.448431396410825e-06
+  }
+]

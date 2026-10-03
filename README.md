@@ -6,7 +6,7 @@ Assignment 1 已完成。Assignment 2 的五份 Notebook 编程练习、实验�
 
 - `assignment1/`：Assignment 1 的代码、Notebook、数据集和保存的模型。
 - `assignment2/`：Assignment 2 的实现、实验输出、问答和本地环境配置。
-- `assignment3/`：Assignment 3 作业文件。
+- `assignment3/`：Transformer、SimCLR、DDPM、CLIP/DINO 的实现与实验；Q3/Q4 已完整执行并保存输出，见 [本地学习说明](assignment3/README-local.md)。
 
 ## Assignment 2
 
@@ -23,6 +23,27 @@ Assignment 1 已完成。Assignment 2 的五份 Notebook 编程练习、实验�
 补齐练习时仅使用训练集和验证集，未重新评估开放挑战的测试集。Notebook 保留运行输出；本地配置和运行顺序见 [assignment2/README-local.md](assignment2/README-local.md)。
 
 本次 Assignment 2 提交不包含数据集、模型权重、运行日志或本地缓存。数据需另行准备，数据下载脚本保留。学生声明未代填。
+
+## Assignment 3
+
+Q3 已实现正向加噪、噪声与原图互相恢复、UNet 跳跃连接、加权去噪损失、反向采样和 classifier-free guidance。使用课程提供的 70000 步预训练权重，完成普通条件生成和引导生成；未从头训练 DDPM。引导采样不会修改调用方的参数字典，因此每一步都保留 guidance scale。
+
+Q4 已实现 CLIP 图文相似度、零样本分类、缓存图片特征的文本检索，以及 DINO patch 特征上的线性分割器。五道问答已填写，注意力图、PCA 图和分割预览保存在 Notebook 中。
+
+| 实验 | 实测结果 |
+| --- | --- |
+| ViT，2 个 epoch | CIFAR-10 测试准确率 46.72% |
+| SimCLR 下游分类 | 无预训练 15.24%；自监督预训练 82.28% |
+| CLIP 相似度 | 最大相对误差 8.32e-6，低于 1e-5 |
+| DINO 首帧 / 末帧 | mean IoU 0.464 / 0.532，超过 0.45 / 0.50 |
+| DINO 全视频 | mean IoU 0.625，超过 0.55 |
+| 独立回归测试 | 7 项通过，覆盖扩散互逆、末步采样、梯度、CFG 参数保持、CLIP 检索缓存和分割接口 |
+
+DINO 使用 DAVIS validation 索引 7 的 `soapbox` 视频，只用第 40 帧标签训练 500 步。分割器采用带 L2 正则化的 Adam 和基于训练帧类别频率的加权交叉熵；全视频指标包含训练帧，属于课程的单视频实验，并非独立视频泛化结果。
+
+DDPM 的原始参考数组和阈值均保留。当前 Windows / PyTorch 2.6 环境中，UNet 与 CFG 的最大相对误差分别约为 1.47e-5、1.18e-4，未达到原文建议的 1e-6；对应最大绝对误差仅约 1.39e-6、6.45e-6。后端对照显示结果受浮点计算实现影响；独立公式、梯度、CFG 恒等式检查及预训练模型生成均已验证。详细数值见 [q3_numeric_checks.json](assignment3/q3_numeric_checks.json)。
+
+代码实现、调试和问答整理使用了 Codex 辅助。Notebook 保存实际运行结果；数据集、模型权重、缓存及生成视频不提交到 Git。课程学生声明仍由本人填写。
 
 ## 获取仓库
 

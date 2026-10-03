@@ -1,6 +1,9 @@
 """Utility functions used for viewing and processing images."""
 
 import urllib.request, urllib.error, urllib.parse, os, tempfile
+from io import BytesIO
+from pathlib import Path
+import hashlib
 
 import numpy as np
 from imageio import imread
@@ -51,23 +54,26 @@ def deprocess_image(img, rescale=False):
     return np.clip(255 * img, 0.0, 255.0).astype(np.uint8)
 
 
-def image_from_url(url):
+def image_from_url(url, timeout=5, quiet=False):
     """
     Read an image from a URL. Returns a numpy array with the pixel data.
-    We write the image to a temporary file then read it back. Kinda gross.
+    Decode in memory and cache successful downloads for offline previews.
     """
     try:
-        f = urllib.request.urlopen(url)
-        _, fname = tempfile.mkstemp()
-        with open(fname, "wb") as ff:
-            ff.write(f.read())
-        img = imread(fname)
-        os.remove(fname)
+        cache = Path(__file__).resolve().parents[1] / ".cache/images"
+        cache.mkdir(parents=True, exist_ok=True)
+        target = cache / (hashlib.sha256(str(url).encode()).hexdigest() + ".npy")
+        if target.exists():
+            return np.load(target, allow_pickle=False)
+        with urllib.request.urlopen(str(url), timeout=timeout) as response:
+            with Image.open(BytesIO(response.read())) as source:
+                img = np.asarray(source.convert("RGB"))
+        np.save(target, img, allow_pickle=False)
         return img
-    except urllib.error.URLError as e:
-        print("URL Error: ", e.reason, url)
-    except urllib.error.HTTPError as e:
-        print("HTTP Error: ", e.code, url)
+    except (urllib.error.URLError, OSError, ValueError) as e:
+        if not quiet:
+            print("Image unavailable:", url, str(e))
+        return None
 
 
 def load_image(filename, size=None):

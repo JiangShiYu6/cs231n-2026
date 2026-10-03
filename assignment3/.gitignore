@@ -1,0 +1,14 @@
+__pycache__/
+.ipynb_checkpoints/
+.cache/
+.notebook-runtime/
+.ipython-local/
+data/
+results/
+pretrained_model/
+cs231n/exp/
+cs231n/datasets/*
+!cs231n/datasets/*.sh
+*.log
+*.part
+dino_res.mp4

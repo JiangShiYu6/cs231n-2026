@@ -3,7 +3,6 @@ import torch.nn as nn
 from tqdm.auto import tqdm
 import math
 
-
 class GaussianDiffusion(nn.Module):
     def __init__(
         self,
@@ -96,12 +95,9 @@ class GaussianDiffusion(nn.Module):
         Returns:
             x_start: (b, *) tensor. Starting image.
         """
-        x_start = None
-        ####################################################################
-        # TODO:
-        # Transform x_t and noise to get x_start according to Eq.(4) and Eq.(14).
-        # Look at the coeffs in `__init__` method and use the `extract` function.
-        ####################################################################
+        signal = extract(self.sqrt_alphas_cumprod, t, x_t.shape)
+        noise_scale = extract(self.sqrt_one_minus_alphas_cumprod, t, x_t.shape)
+        x_start = (x_t - noise_scale * noise) / signal
 
         ####################################################################
         return x_start
@@ -115,12 +111,9 @@ class GaussianDiffusion(nn.Module):
         Returns:
             pred_noise: (b, *) tensor. Predicted noise.
         """
-        pred_noise = None
-        ####################################################################
-        # TODO:
-        # Transform x_t and noise to get x_start according to Eq.(4) and Eq.(14).
-        # Look at the coeffs in `__init__` method and use the `extract` function.
-        ####################################################################
+        signal = extract(self.sqrt_alphas_cumprod, t, x_t.shape)
+        noise_scale = extract(self.sqrt_one_minus_alphas_cumprod, t, x_t.shape)
+        pred_noise = (x_t - signal * x_start) / noise_scale
 
         ####################################################################
         return pred_noise
@@ -157,23 +150,14 @@ class GaussianDiffusion(nn.Module):
             x_tm1: (b, *) tensor. Sampled image.
         """
         t = torch.full((x_t.shape[0],), t, device=x_t.device, dtype=torch.long)  # (b,)
-        x_tm1 = None  # sample x_{t-1} from p(x_{t-1} | x_t)
-
-        ##################################################################
-        # TODO: Implement the sampling step p(x_{t-1} | x_t) according to Eq. (6):
-        #
-        # - Steps:
-        #   1. Get the model prediction by calling self.model with appropriate args.
-        #   2. The model output can be either noise or x_start depending on self.objective.
-        #      You can recover the other by calling self.predict_start_from_noise or
-        #      self.predict_noise_from_start as needed.
-        #   3. Clamp predicted x_start to the valid range [-1, 1]. This ensures the
-        #      generation remains stable during denoising iterations.
-        #   4. Get the mean and std for q(x_{t-1} | x_t, x_0) using self.q_posterior,
-        #      and sample x_{t-1}.
-        ##################################################################
-        
-        ##################################################################
+        prediction = self.model(x_t, t, model_kwargs=model_kwargs)
+        x_start = (
+            self.predict_start_from_noise(x_t, t, prediction)
+            if self.objective == "pred_noise" else prediction
+        ).clamp(-1, 1)
+        mean, std = self.q_posterior(x_start, x_t, t)
+        nonzero = (t > 0).reshape(-1, *((1,) * (x_t.ndim - 1)))
+        x_tm1 = mean + nonzero * std * torch.randn_like(x_t)
 
         return x_tm1
 
@@ -207,16 +191,9 @@ class GaussianDiffusion(nn.Module):
             x_t: (b, *) tensor. Noisy image.
         """
 
-        x_t = None
-        ####################################################################
-        # TODO:
-        # Implement sampling from q(x_t | x_0) according to Eq. (4) of the paper.
-        # Hints: (1) Look at the `__init__` method to see precomputed coefficients.
-        # (2) Use the `extract` function defined above to extract the coefficients
-        # for the given time step `t`. (3) Recall that sampling from N(mu, sigma^2)
-        # can be done as: x_t = mu + sigma * noise where noise is sampled from N(0, 1).
-        # Approximately 3 lines of code.
-        ####################################################################
+        signal = extract(self.sqrt_alphas_cumprod, t, x_start.shape)
+        noise_scale = extract(self.sqrt_one_minus_alphas_cumprod, t, x_start.shape)
+        x_t = signal * x_start + noise_scale * noise
 
         ####################################################################
         return x_t
@@ -228,21 +205,11 @@ class GaussianDiffusion(nn.Module):
         noise = torch.randn_like(x_start)  # (b, *)
         target = noise if self.objective == "pred_noise" else x_start  # (b, *)
         loss_weight = extract(self.loss_weight, t, target.shape)  # (b, *)
-        loss = None
-
-        ####################################################################
-        # TODO:
-        # Implement the loss function according to Eq. (14) of the paper.
-        # First, sample x_t from q(x_t | x_0) using the `q_sample` function.
-        # Then, get model predictions by calling self.model with appropriate args.
-        # Finally, compute the weighted MSE loss.
-        # Approximately 3-4 lines of code.
-        ####################################################################
-
-        ####################################################################
+        x_t = self.q_sample(x_start, t, noise)
+        prediction = self.model(x_t, t, model_kwargs=model_kwargs)
+        loss = (loss_weight * (prediction - target).square()).mean()
 
         return loss
-
 
 def extract(a, t, x_shape):
     """
@@ -268,7 +235,6 @@ def extract(a, t, x_shape):
     )  # Reshape to (b, 1, 1, 1) for broadcasting
     return out
 
-
 def linear_beta_schedule(timesteps):
     """
     linear schedule, proposed in original ddpm paper
@@ -277,7 +243,6 @@ def linear_beta_schedule(timesteps):
     beta_start = scale * 0.0001
     beta_end = scale * 0.02
     return torch.linspace(beta_start, beta_end, timesteps, dtype=torch.float64)
-
 
 def cosine_beta_schedule(timesteps, s=0.008):
     """
@@ -290,7 +255,6 @@ def cosine_beta_schedule(timesteps, s=0.008):
     alphas_cumprod = alphas_cumprod / alphas_cumprod[0]
     betas = 1 - (alphas_cumprod[1:] / alphas_cumprod[:-1])
     return torch.clip(betas, 0, 0.999)
-
 
 def sigmoid_beta_schedule(timesteps, start=-3, end=3, tau=1, clamp_min=1e-5):
     """
@@ -308,7 +272,6 @@ def sigmoid_beta_schedule(timesteps, start=-3, end=3, tau=1, clamp_min=1e-5):
     alphas_cumprod = alphas_cumprod / alphas_cumprod[0]
     betas = 1 - (alphas_cumprod[1:] / alphas_cumprod[:-1])
     return torch.clip(betas, 0, 0.999)
-
 
 def get_beta_schedule(beta_schedule, timesteps):
     if beta_schedule == "linear":
