@@ -1,0 +1,29 @@
+name: DDPM numerical references
+on:
+  push:
+    branches: [fix/ddpm-numerics]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  cpu-reference:
+    runs-on: ubuntu-22.04
+    strategy:
+      matrix:
+        torch: ['2.6.0', '2.3.0']
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          lfs: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: pip install torch==${{ matrix.torch }} --index-url https://download.pytorch.org/whl/cpu
+      - run: pip install numpy==1.26.4 einops==0.8.1
+      - run: python assignment3/tests/check_ddpm_references.py
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ddpm-reference-${{ matrix.torch }}
+          path: |
+            assignment3/ddpm_reference_report.json
+            assignment3/ddpm_fixture_*.npz
