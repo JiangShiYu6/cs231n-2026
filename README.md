@@ -37,8 +37,8 @@ This turns a pair of Python loops into a matrix multiplication and two broadcast
 
 ```python
 squared_distances = (
-    np.sum(X_test  2, axis=1, keepdims=True)
-    + np.sum(X_train  2, axis=1)[None, :]
+    np.sum(X_test ** 2, axis=1, keepdims=True)
+    + np.sum(X_train ** 2, axis=1)[None, :]
     - 2 * X_test @ X_train.T
 )
 distances = np.sqrt(np.maximum(squared_distances, 0))
@@ -135,7 +135,7 @@ Dropout randomly removes activations during training, reducing reliance on parti
 
 $$
 \tilde{h} = \frac{m\odot h}{p},
-\qquad m_i\sim\operatorname{Bernoulli}(p).
+\qquad m_i\sim\mathrm{Bernoulli}(p).
 $$
 
 Dividing by $p$ preserves the expected activation. At inference, dropout is disabled and the full network is used. The notebook compares training and validation accuracy at different keep probabilities to study the trade-off between regularization and fitting the training set.
@@ -182,8 +182,8 @@ The small-data overfitting experiment reaches a loss of approximately 0.01337, s
 Attention lets each token combine information from other tokens according to learned similarity scores:
 
 $$
-\operatorname{Attention}(Q,K,V)
-=\operatorname{softmax}\left(\frac{QK^\top}{\sqrt{d_k}}\right)V.
+\mathrm{Attention}(Q,K,V)
+=\mathrm{softmax}\left(\frac{QK^\top}{\sqrt{d_k}}\right)V.
 $$
 
 The captioning decoder uses causal self-attention so a word cannot see future words during training. Cross-attention supplies information from the image, while positional encodings represent token order. Multiple attention heads learn different ways of combining the available context.
@@ -213,11 +213,11 @@ The contrastive objective makes views of the same image similar in projection sp
 
 $$
 \ell_{i,j}=-\log
-\frac{\exp(\operatorname{sim}(z_i,z_j)/\tau)}
-{\sum_{k\ne i}\exp(\operatorname{sim}(z_i,z_k)/\tau)}.
+\frac{\exp(\mathrm{sim}(z_i,z_j)/\tau)}
+{\sum_{k\ne i}\exp(\mathrm{sim}(z_i,z_k)/\tau)}.
 $$
 
-Here, $\operatorname{sim}$ is cosine similarity and $\tau$ is the temperature. The denominator includes the positive partner and excludes the anchor itself. The final loss averages both directions of every positive pair.
+Here, $\mathrm{sim}$ is cosine similarity and $\tau$ is the temperature. The denominator includes the positive partner and excludes the anchor itself. The final loss averages both directions of every positive pair.
 
 The projection head is used for the contrastive objective; the encoder representation is used for downstream classification. This lets the representation before the head retain information useful beyond matching augmented views.
 
