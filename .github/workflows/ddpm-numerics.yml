@@ -1,25 +1,11 @@
-name: DDPM numerical references
+name: DDPM reference diagnostics (not a passing-test verdict)
 on:
-  push:
-    branches: [fix/ddpm-numerics]
   workflow_dispatch:
 permissions:
   contents: read
 jobs:
   cpu-reference:
-    runs-on: ${{ matrix.os }}
-    strategy:
-      matrix:
-        include:
-          - os: ubuntu-22.04
-            isa: AVX2
-          - os: ubuntu-22.04
-            isa: SSE41
-          - os: macos-14
-            isa: DEFAULT
-    env:
-      ONEDNN_MAX_CPU_ISA: ${{ matrix.isa }}
-      DNNL_MAX_CPU_ISA: ${{ matrix.isa }}
+    runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v4
         with:
@@ -27,15 +13,23 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
-      - if: runner.os == 'Linux'
-        run: pip install torch==2.6.0 --index-url https://download.pytorch.org/whl/cpu
-      - if: runner.os == 'macOS'
-        run: pip install torch==2.6.0
+      - run: pip install torch==2.6.0 --index-url https://download.pytorch.org/whl/cpu
       - run: pip install numpy==1.26.4 einops==0.8.1
-      - run: python assignment3/tests/check_ddpm_references.py
+      - run: python assignment3/tests/check_ddpm_references.py --diagnostic
+      - name: Report actual reference-check verdicts
+        run: |
+          python - <<'PY'
+          import json, os
+          report = json.load(open('assignment3/ddpm_reference_report.json'))
+          with open(os.environ['GITHUB_STEP_SUMMARY'], 'a') as summary:
+              summary.write('Diagnostic collection success does not mean numerical checks passed.\n\n')
+              for result in report['results']:
+                  verdict = 'PASS' if result['passed'] else 'FAIL'
+                  summary.write(f"- {verdict}: cell {result['cell']}, threads={result['threads']}, "
+                                f"mkldnn={result['mkldnn']}, relative error={result['relative_error']:.8g}, "
+                                f"threshold={result['threshold']}\n")
+          PY
       - uses: actions/upload-artifact@v4
         with:
-          name: ddpm-reference-${{ matrix.os }}-${{ matrix.isa }}
-          path: |
-            assignment3/ddpm_reference_report.json
-            assignment3/ddpm_fixture_*.npz
+          name: ddpm-reference-report
+          path: assignment3/ddpm_reference_report.json

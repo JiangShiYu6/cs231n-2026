@@ -41,7 +41,9 @@ Q4 已实现 CLIP 图文相似度、零样本分类、缓存图片特征的文�
 
 DINO 使用 DAVIS validation 索引 7 的 `soapbox` 视频，只用第 40 帧标签训练 500 步。分割器采用带 L2 正则化的 Adam 和基于训练帧类别频率的加权交叉熵；全视频指标包含训练帧，属于课程的单视频实验，并非独立视频泛化结果。
 
-DDPM 的原始参考数组和阈值均保留。当前 Windows / PyTorch 2.6 环境中，UNet 与 CFG 的最大相对误差分别约为 1.47e-5、1.18e-4，未达到原文建议的 1e-6；对应最大绝对误差仅约 1.39e-6、6.45e-6。后端对照显示结果受浮点计算实现影响；独立公式、梯度、CFG 恒等式检查及预训练模型生成均已验证。详细数值见 [q3_numeric_checks.json](assignment3/q3_numeric_checks.json)。
+DDPM 的 UNet 与 CFG 原始数值检查仍未通过 `1e-6`，不能视为全部验证完成。Windows / PyTorch 2.6 的最大相对误差分别为 1.47e-5、1.18e-4。进一步对照发现，Linux 与 Windows 的测试输入完全相同，但随机初始化权重有 8377 个元素不同，最大差值为 2.98e-8；Linux、macOS 和不同 CPU 后端也未同时复现两项参考阈值。这证实环境会影响结果，但尚未确定参考值的生成环境，也未证明这是偏差的唯一原因。课程最新模板与本地参考检查相同，参考数组及阈值均未修改。
+
+独立公式、梯度、CFG 恒等式检查及预训练模型生成已验证。原始数值检查现在有[独立脚本](assignment3/tests/check_ddpm_references.py)，未达标时返回失败状态，避免只打印误差却被当作测试通过。详见[本地数值](assignment3/q3_numeric_checks.json)及[跨平台对照](assignment3/ddpm_cross_platform_checks.json)。
 
 代码实现、调试和问答整理使用了 Codex 辅助。Notebook 保存实际运行结果；数据集、模型权重、缓存及生成视频不提交到 Git。课程学生声明仍由本人填写。
 

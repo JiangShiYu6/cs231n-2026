@@ -29,7 +29,17 @@ python -m unittest discover -s tests -v
 
 7 项测试不需要下载数据或预训练权重。DINO 实验使用 DAVIS validation 索引 7（`soapbox`，99 帧），以第 40 帧的 3600 个 patch 训练线性分类器 500 步。Adam 学习率为 0.01、weight decay 为 1.0；交叉熵类别权重仅根据训练帧的标签计数计算。训练帧也包含在全视频均值内。
 
-DDPM 原始参考数组未修改。当前环境下，UNet 和 CFG 最大相对误差分别约为 1.47e-5、1.18e-4，超过旧参考建议的 1e-6，对应绝对误差为 1.39e-6、6.45e-6；不同 CPU 后端会改变这些微小差异。参考数值检查与独立公式/梯度测试应分别看待，完整记录见 `q3_numeric_checks.json`。Notebook 中添加了说明，没有放宽原参考阈值或替换预期输出。
+DDPM 的两项严格数值检查仍未通过。UNet 和 CFG 最大相对误差分别为 1.47e-5、1.18e-4，超过课程要求的 1e-6；绝对误差分别为 1.39e-6、6.45e-6。2026-10-03 下载的课程官方模板包含相同参考数组，不能把它们直接称为过时或错误的参考值。
+
+Linux 与 Windows 的测试图片和文本输入逐项相同，但初始化权重有 8377 个元素不同，最大差值为 2.98e-8。Linux PyTorch 2.3/2.6、macOS ARM 和 CPU 后端对照仍未同时达到两项阈值，详见 `ddpm_cross_platform_checks.json` 中的实测数据及 GitHub Actions 链接。环境差异已有证据；参考值的原始运行环境及全部误差来源尚未确定。独立回归测试通过不代表这两项检查通过。
+
+从本目录运行严格检查：
+
+```powershell
+python tests/check_ddpm_references.py
+```
+
+脚本直接执行 Notebook 中未修改的两段测试；任何一项超过 `1e-6` 都返回非零退出码。`--diagnostic` 只收集不同线程数和后端的数据，明确打印失败项数量。GitHub 的手动 `DDPM reference diagnostics` 工作流也只收集诊断，其任务执行成功不代表数值达标。原参考数组、误差公式及阈值均未放宽；当前仍需解决严格复现问题。
 
 SimCLR 的数据增强检查在单进程加载下复现 worker 0 的随机种子，使原参考误差为 0。CLIP 的失效 Flickr 图片可能被可用的图文对替换，因此分类文字和检索示例不保证与原说明逐项相同。
 

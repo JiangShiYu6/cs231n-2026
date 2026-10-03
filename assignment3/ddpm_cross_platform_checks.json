@@ -1,0 +1,538 @@
+[
+  {
+    "label": "Linux PyTorch 2.6.0",
+    "workflow_run": "https://github.com/JiangShiYu6/cs231n-2026/actions/runs/37090148438",
+    "platform": "Linux-6.8.0-1064-azure-x86_64-with-glibc2.35",
+    "torch": "2.6.0+cpu",
+    "results": [
+      {
+        "cell": 18,
+        "threads": 1,
+        "mkldnn": true,
+        "relative_error": 0.000007040530094478643,
+        "absolute_error": 0.0000011333490753107078,
+        "threshold": 0.000001,
+        "passed": false
+      },
+      {
+        "cell": 31,
+        "threads": 1,
+        "mkldnn": true,
+        "relative_error": 0.000042728542972710117,
+        "absolute_error": 0.000003967541504001915,
+        "threshold": 0.000001,
+        "passed": false
+      },
+      {
+        "cell": 18,
+        "threads": 1,
+        "mkldnn": false,
+        "relative_error": 0.000004341582999697616,
+        "absolute_error": 9.54535140984536e-7,
+        "threshold": 0.000001,
+        "passed": false
+      },
+      {
+        "cell": 31,
+        "threads": 1,
+        "mkldnn": false,
+        "relative_error": 0.000024826965862755406,
+        "absolute_error": 0.000005401812744221246,
+        "threshold": 0.000001,
+        "passed": false
+      },
+      {
+        "cell": 18,
+        "threads": 2,
+        "mkldnn": true,
+        "relative_error": 0.000003664006962270193,
+        "absolute_error": 6.565119171075828e-7,
+        "threshold": 0.000001,
+        "passed": false
+      },
+      {
+        "cell": 31,
+        "threads": 2,
+        "mkldnn": true,
+        "relative_error": 0.000004477708079356332,
+        "absolute_error": 0.0000033591918944253507,
+        "threshold": 0.000001,
+        "passed": false
+      },
+      {
+        "cell": 18,
+        "threads": 2,
+        "mkldnn": false,
+        "relative_error": 0.000004341582999697616,
+        "absolute_error": 9.54535140984536e-7,
+        "threshold": 0.000001,
+        "passed": false
+      },
+      {
+        "cell": 31,
+        "threads": 2,
+        "mkldnn": false,
+        "relative_error": 0.000024826965862755406,
+        "absolute_error": 0.000005401812744221246,
+        "threshold": 0.000001,
+        "passed": false
+      }
+    ]
+  },
+  {
+    "label": "Linux AVX2",
+    "workflow_run": "https://github.com/JiangShiYu6/cs231n-2026/actions/runs/37090295340",
+    "platform": "Linux-6.8.0-1064-azure-x86_64-with-glibc2.35",
+    "torch": "2.6.0+cpu",
+    "results": [
+      {
+        "cell": 18,
+        "threads": 1,
+        "mkldnn": true,
+        "relative_error": 0.000007040530094478643,
+        "absolute_error": 0.0000011333490753107078,
+        "threshold": 0.000001,
+        "passed": false
+      },
+      {
+        "cell": 31,
+        "threads": 1,
+        "mkldnn": true,
+        "relative_error": 0.000042728542972710117,
+        "absolute_error": 0.000003967541504001915,
+        "threshold": 0.000001,
+        "passed": false
+      },
+      {
+        "cell": 18,
+        "threads": 1,
+        "mkldnn": false,
+        "relative_error": 0.000004341582999697616,
+        "absolute_error": 9.54535140984536e-7,
+        "threshold": 0.000001,
+        "passed": false
+      },
+      {
+        "cell": 31,
+        "threads": 1,
+        "mkldnn": false,
+        "relative_error": 0.000024826965862755406,
+        "absolute_error": 0.000005401812744221246,
+        "threshold": 0.000001,
+        "passed": false
+      },
+      {
+        "cell": 18,
+        "threads": 2,
+        "mkldnn": true,
+        "relative_error": 0.000003664006962270193,
+        "absolute_error": 6.565119171075828e-7,
+        "threshold": 0.000001,
+        "passed": false
+      },
+      {
+        "cell": 31,
+        "threads": 2,
+        "mkldnn": true,
+        "relative_error": 0.000004477708079356332,
+        "absolute_error": 0.0000033591918944253507,
+        "threshold": 0.000001,
+        "passed": false
+      },
+      {
+        "cell": 18,
+        "threads": 2,
+        "mkldnn": false,
+        "relative_error": 0.000004341582999697616,
+        "absolute_error": 9.54535140984536e-7,
+        "threshold": 0.000001,
+        "passed": false
+      },
+      {
+        "cell": 31,
+        "threads": 2,
+        "mkldnn": false,
+        "relative_error": 0.000024826965862755406,
+        "absolute_error": 0.000005401812744221246,
+        "threshold": 0.000001,
+        "passed": false
+      },
+      {
+        "cell": 18,
+        "threads": 4,
+        "mkldnn": true,
+        "relative_error": 0.000003664006962270193,
+        "absolute_error": 6.565119171075828e-7,
+        "threshold": 0.000001,
+        "passed": false
+      },
+      {
+        "cell": 31,
+        "threads": 4,
+        "mkldnn": true,
+        "relative_error": 0.000004477708079356332,
+        "absolute_error": 0.0000033591918944253507,
+        "threshold": 0.000001,
+        "passed": false
+      },
+      {
+        "cell": 18,
+        "threads": 4,
+        "mkldnn": false,
+        "relative_error": 0.000004341582999697616,
+        "absolute_error": 9.54535140984536e-7,
+        "threshold": 0.000001,
+        "passed": false
+      },
+      {
+        "cell": 31,
+        "threads": 4,
+        "mkldnn": false,
+        "relative_error": 0.000024826965862755406,
+        "absolute_error": 0.000005401812744221246,
+        "threshold": 0.000001,
+        "passed": false
+      },
+      {
+        "cell": 18,
+        "threads": 8,
+        "mkldnn": true,
+        "relative_error": 0.000003664006962270193,
+        "absolute_error": 6.565119171075828e-7,
+        "threshold": 0.000001,
+        "passed": false
+      },
+      {
+        "cell": 31,
+        "threads": 8,
+        "mkldnn": true,
+        "relative_error": 0.000004477708079356332,
+        "absolute_error": 0.0000033591918944253507,
+        "threshold": 0.000001,
+        "passed": false
+      },
+      {
+        "cell": 18,
+        "threads": 8,
+        "mkldnn": false,
+        "relative_error": 0.000004341582999697616,
+        "absolute_error": 9.54535140984536e-7,
+        "threshold": 0.000001,
+        "passed": false
+      },
+      {
+        "cell": 31,
+        "threads": 8,
+        "mkldnn": false,
+        "relative_error": 0.000024826965862755406,
+        "absolute_error": 0.000005401812744221246,
+        "threshold": 0.000001,
+        "passed": false
+      }
+    ]
+  },
+  {
+    "label": "Linux SSE41",
+    "workflow_run": "https://github.com/JiangShiYu6/cs231n-2026/actions/runs/37090295340",
+    "platform": "Linux-6.8.0-1064-azure-x86_64-with-glibc2.35",
+    "torch": "2.6.0+cpu",
+    "results": [
+      {
+        "cell": 18,
+        "threads": 1,
+        "mkldnn": true,
+        "relative_error": 0.000010457757443827134,
+        "absolute_error": 0.000001431372299187661,
+        "threshold": 0.000001,
+        "passed": false
+      },
+      {
+        "cell": 31,
+        "threads": 1,
+        "mkldnn": true,
+        "relative_error": 0.00008927564308982965,
+        "absolute_error": 0.00000539805297861129,
+        "threshold": 0.000001,
+        "passed": false
+      },
+      {
+        "cell": 18,
+        "threads": 1,
+        "mkldnn": false,
+        "relative_error": 0.000004341582999697616,
+        "absolute_error": 9.54535140984536e-7,
+        "threshold": 0.000001,
+        "passed": false
+      },
+      {
+        "cell": 31,
+        "threads": 1,
+        "mkldnn": false,
+        "relative_error": 0.000024826965862755406,
+        "absolute_error": 0.000005401812744221246,
+        "threshold": 0.000001,
+        "passed": false
+      },
+      {
+        "cell": 18,
+        "threads": 2,
+        "mkldnn": true,
+        "relative_error": 0.000010457757443827134,
+        "absolute_error": 0.000001341965332024575,
+        "threshold": 0.000001,
+        "passed": false
+      },
+      {
+        "cell": 31,
+        "threads": 2,
+        "mkldnn": true,
+        "relative_error": 0.00009285636873001037,
+        "absolute_error": 0.000005159634399509727,
+        "threshold": 0.000001,
+        "passed": false
+      },
+      {
+        "cell": 18,
+        "threads": 2,
+        "mkldnn": false,
+        "relative_error": 0.000004341582999697616,
+        "absolute_error": 9.54535140984536e-7,
+        "threshold": 0.000001,
+        "passed": false
+      },
+      {
+        "cell": 31,
+        "threads": 2,
+        "mkldnn": false,
+        "relative_error": 0.000024826965862755406,
+        "absolute_error": 0.000005401812744221246,
+        "threshold": 0.000001,
+        "passed": false
+      },
+      {
+        "cell": 18,
+        "threads": 4,
+        "mkldnn": true,
+        "relative_error": 0.000010457757443827134,
+        "absolute_error": 0.000001341965332024575,
+        "threshold": 0.000001,
+        "passed": false
+      },
+      {
+        "cell": 31,
+        "threads": 4,
+        "mkldnn": true,
+        "relative_error": 0.00009285636873001037,
+        "absolute_error": 0.000005159634399509727,
+        "threshold": 0.000001,
+        "passed": false
+      },
+      {
+        "cell": 18,
+        "threads": 4,
+        "mkldnn": false,
+        "relative_error": 0.000004341582999697616,
+        "absolute_error": 9.54535140984536e-7,
+        "threshold": 0.000001,
+        "passed": false
+      },
+      {
+        "cell": 31,
+        "threads": 4,
+        "mkldnn": false,
+        "relative_error": 0.000024826965862755406,
+        "absolute_error": 0.000005401812744221246,
+        "threshold": 0.000001,
+        "passed": false
+      },
+      {
+        "cell": 18,
+        "threads": 8,
+        "mkldnn": true,
+        "relative_error": 0.000010457757443827134,
+        "absolute_error": 0.0000017591978454523094,
+        "threshold": 0.000001,
+        "passed": false
+      },
+      {
+        "cell": 31,
+        "threads": 8,
+        "mkldnn": true,
+        "relative_error": 0.00008211426873135133,
+        "absolute_error": 0.000006590145874119102,
+        "threshold": 0.000001,
+        "passed": false
+      },
+      {
+        "cell": 18,
+        "threads": 8,
+        "mkldnn": false,
+        "relative_error": 0.000004341582999697616,
+        "absolute_error": 9.54535140984536e-7,
+        "threshold": 0.000001,
+        "passed": false
+      },
+      {
+        "cell": 31,
+        "threads": 8,
+        "mkldnn": false,
+        "relative_error": 0.000024826965862755406,
+        "absolute_error": 0.000005401812744221246,
+        "threshold": 0.000001,
+        "passed": false
+      }
+    ]
+  },
+  {
+    "label": "macOS ARM",
+    "workflow_run": "https://github.com/JiangShiYu6/cs231n-2026/actions/runs/37090295340",
+    "platform": "macOS-14.8.9-arm64-arm-64bit",
+    "torch": "2.6.0",
+    "results": [
+      {
+        "cell": 18,
+        "threads": 1,
+        "mkldnn": true,
+        "relative_error": 0.000015014096906023447,
+        "absolute_error": 0.0000019380117797784813,
+        "threshold": 0.000001,
+        "passed": false
+      },
+      {
+        "cell": 31,
+        "threads": 1,
+        "mkldnn": true,
+        "relative_error": 0.00010001789693363197,
+        "absolute_error": 0.000006828564453220665,
+        "threshold": 0.000001,
+        "passed": false
+      },
+      {
+        "cell": 18,
+        "threads": 1,
+        "mkldnn": false,
+        "relative_error": 0.000015014096906023447,
+        "absolute_error": 0.0000019380117797784813,
+        "threshold": 0.000001,
+        "passed": false
+      },
+      {
+        "cell": 31,
+        "threads": 1,
+        "mkldnn": false,
+        "relative_error": 0.00010001789693363197,
+        "absolute_error": 0.000006828564453220665,
+        "threshold": 0.000001,
+        "passed": false
+      },
+      {
+        "cell": 18,
+        "threads": 2,
+        "mkldnn": true,
+        "relative_error": 0.000015014096906023447,
+        "absolute_error": 0.0000019380117797784813,
+        "threshold": 0.000001,
+        "passed": false
+      },
+      {
+        "cell": 31,
+        "threads": 2,
+        "mkldnn": true,
+        "relative_error": 0.00010001789693363197,
+        "absolute_error": 0.000006828564453220665,
+        "threshold": 0.000001,
+        "passed": false
+      },
+      {
+        "cell": 18,
+        "threads": 2,
+        "mkldnn": false,
+        "relative_error": 0.000015014096906023447,
+        "absolute_error": 0.0000019380117797784813,
+        "threshold": 0.000001,
+        "passed": false
+      },
+      {
+        "cell": 31,
+        "threads": 2,
+        "mkldnn": false,
+        "relative_error": 0.00010001789693363197,
+        "absolute_error": 0.000006828564453220665,
+        "threshold": 0.000001,
+        "passed": false
+      },
+      {
+        "cell": 18,
+        "threads": 4,
+        "mkldnn": true,
+        "relative_error": 0.000015014096906023447,
+        "absolute_error": 0.0000019380117797784813,
+        "threshold": 0.000001,
+        "passed": false
+      },
+      {
+        "cell": 31,
+        "threads": 4,
+        "mkldnn": true,
+        "relative_error": 0.00010001789693363197,
+        "absolute_error": 0.000006828564453220665,
+        "threshold": 0.000001,
+        "passed": false
+      },
+      {
+        "cell": 18,
+        "threads": 4,
+        "mkldnn": false,
+        "relative_error": 0.000015014096906023447,
+        "absolute_error": 0.0000019380117797784813,
+        "threshold": 0.000001,
+        "passed": false
+      },
+      {
+        "cell": 31,
+        "threads": 4,
+        "mkldnn": false,
+        "relative_error": 0.00010001789693363197,
+        "absolute_error": 0.000006828564453220665,
+        "threshold": 0.000001,
+        "passed": false
+      },
+      {
+        "cell": 18,
+        "threads": 8,
+        "mkldnn": true,
+        "relative_error": 0.000015014096906023447,
+        "absolute_error": 0.0000019380117797784813,
+        "threshold": 0.000001,
+        "passed": false
+      },
+      {
+        "cell": 31,
+        "threads": 8,
+        "mkldnn": true,
+        "relative_error": 0.00010001789693363197,
+        "absolute_error": 0.000006828564453220665,
+        "threshold": 0.000001,
+        "passed": false
+      },
+      {
+        "cell": 18,
+        "threads": 8,
+        "mkldnn": false,
+        "relative_error": 0.000015014096906023447,
+        "absolute_error": 0.0000019380117797784813,
+        "threshold": 0.000001,
+        "passed": false
+      },
+      {
+        "cell": 31,
+        "threads": 8,
+        "mkldnn": false,
+        "relative_error": 0.00010001789693363197,
+        "absolute_error": 0.000006828564453220665,
+        "threshold": 0.000001,
+        "passed": false
+      }
+    ]
+  }
+]
