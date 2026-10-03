@@ -41,6 +41,8 @@ python tests/check_ddpm_references.py
 
 脚本直接执行 Notebook 中未修改的两段测试；任何一项超过 `1e-6` 都返回非零退出码。`--diagnostic` 只收集不同线程数和后端的数据，明确打印失败项数量。GitHub 的手动 `DDPM reference diagnostics` 工作流也只收集诊断，其任务执行成功不代表数值达标。原参考数组、误差公式及阈值均未放宽；当前仍需解决严格复现问题。
 
+另外对照了用户提供的 [congyuxiaoyoudao/cs231n](https://github.com/congyuxiaoyoudao/cs231n/tree/8d3fbd0ad61ded86440c72a33628c742865495cb/assignment3)。这是 2025 版作业，其 UNet 测试在训练模式运行，参考数组与当前 2026 版不同：保存的 UNet 相对误差为 6.07e-6，符合当时的 1e-5；CFG 相对误差为 6.04e-5，仍超过其 1e-6 要求。该仓库没有锁定 PyTorch 版本。把它的 UNet 实现直接用于本地未修改的 2026 测试后，两份实现的权重及输出逐元素相同，最大输出差为 0；两项误差仍分别为 1.47e-5、1.18e-4。因此，这份参考实现没有提供能消除当前误差的代码差异。实测记录见 `ddpm_reference_comparison.json`，没有将其代码或旧参考数组替换到本地实现中。
+
 SimCLR 的数据增强检查在单进程加载下复现 worker 0 的随机种子，使原参考误差为 0。CLIP 的失效 Flickr 图片可能被可用的图文对替换，因此分类文字和检索示例不保证与原说明逐项相同。
 
 ## 环境

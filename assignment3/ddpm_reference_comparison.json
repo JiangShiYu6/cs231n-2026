@@ -1,0 +1,44 @@
+{
+  "source": "https://github.com/congyuxiaoyoudao/cs231n/blob/8d3fbd0ad61ded86440c72a33628c742865495cb/assignment3/cs231n/unet.py",
+  "source_sha256": "aaea0e735daf6b18baafa0b31be2c07e9e25549b2fb4ee61f9da911e81659b1e",
+  "torch": "2.6.0+cu124",
+  "threads": 2,
+  "results": [
+    {
+      "cell": 18,
+      "weights_identical": true,
+      "outputs_identical": true,
+      "max_output_difference": 0.0,
+      "local_reference_error": 1.4688642710356004e-05,
+      "external_implementation_reference_error": 1.4688642710356004e-05
+    },
+    {
+      "cell": 31,
+      "weights_identical": true,
+      "outputs_identical": true,
+      "max_output_difference": 0.0,
+      "local_reference_error": 0.0001179221661745567,
+      "external_implementation_reference_error": 0.0001179221661745567
+    }
+  ],
+  "reference_commit": "8d3fbd0ad61ded86440c72a33628c742865495cb",
+  "reference_notebook_saved_results": [
+    {
+      "check": "UNet.forward",
+      "relative_error": 6.074360649530709e-06,
+      "threshold": 1e-05,
+      "passed": true
+    },
+    {
+      "check": "Unet.cfg_forward",
+      "relative_error": 6.044381058031236e-05,
+      "threshold": 1e-06,
+      "passed": false
+    }
+  ],
+  "reference_notebook_mode": "train (no eval() call in the two test cells)",
+  "reference_environment": {
+    "python": "3.11.7 (notebook metadata)",
+    "torch": "not pinned in requirements.txt"
+  }
+}

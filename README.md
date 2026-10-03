@@ -45,6 +45,8 @@ DDPM 的 UNet 与 CFG 原始数值检查仍未通过 `1e-6`，不能视为全部
 
 独立公式、梯度、CFG 恒等式检查及预训练模型生成已验证。原始数值检查现在有[独立脚本](assignment3/tests/check_ddpm_references.py)，未达标时返回失败状态，避免只打印误差却被当作测试通过。详见[本地数值](assignment3/q3_numeric_checks.json)及[跨平台对照](assignment3/ddpm_cross_platform_checks.json)。
 
+对照用户提供的 `congyuxiaoyoudao/cs231n` 后，确认两份 UNet 实现在本地 2026 测试中的输出逐元素完全一致。该仓库的 2025 版 Notebook 也保存了未达到 1e-6 的 CFG 结果，不能作为两项检查均已通过的依据。版本差异和实测结果见[参考实现对照](assignment3/ddpm_reference_comparison.json)。
+
 代码实现、调试和问答整理使用了 Codex 辅助。Notebook 保存实际运行结果；数据集、模型权重、缓存及生成视频不提交到 Git。课程学生声明仍由本人填写。
 
 ## 获取仓库
